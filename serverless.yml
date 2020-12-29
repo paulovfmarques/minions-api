@@ -34,6 +34,14 @@ provider:
         - dynamodb:DeleteItem
         - dynamodb:DescribeTable
       Resource: "arn:aws:dynamodb:us-east-2:*:*"
+    - Effect: Allow
+      Action:
+        - ses:*
+      Resource: "*"
+    - Effect: Allow
+      Action:
+        - s3:*
+      Resource: "arn:aws:s3:::bucket-minions-upload"
 
 functions:
   makeReservation:
@@ -42,3 +50,18 @@ functions:
       - http:
           path: reservation
           method: put
+          cors: true
+  listMinions:
+    handler: services/minions-api/listMinions.main
+    events:
+      - http:
+          path: list
+          method: get
+          cors: true
+  sendEmail:
+    handler: services/email-api/sendEmail.main
+    events:
+      - http:
+          path: confirmation
+          method: post
+          cors: true
