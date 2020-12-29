@@ -51,6 +51,7 @@ functions:
           path: reservation
           method: put
           cors: true
+          authorizer: aws_iam
   listMinions:
     handler: services/minions-api/listMinions.main
     events:
@@ -58,6 +59,7 @@ functions:
           path: list
           method: get
           cors: true
+          authorizer: aws_iam
   sendEmail:
     handler: services/email-api/sendEmail.main
     events:
@@ -65,3 +67,8 @@ functions:
           path: confirmation
           method: post
           cors: true
+          authorizer: aws_iam
+
+resources:
+  # API Gateway Errors
+  - ${file(resources/api-gateway-errors.yml)}
