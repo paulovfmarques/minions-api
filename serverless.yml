@@ -41,7 +41,7 @@ provider:
     - Effect: Allow
       Action:
         - s3:*
-      Resource: "arn:aws:s3:::bucket-minions-upload"
+      Resource: "*"
 
 functions:
   makeReservation:
@@ -51,18 +51,18 @@ functions:
           path: reservation
           method: put
           cors: true
+  getImage:
+    handler: services/minions-api/getImage.main
+    events:
+      - http:
+          path: image/{id}
+          method: get
+          cors: true
   listMinions:
     handler: services/minions-api/listMinions.main
     events:
       - http:
           path: list
-          method: get
-          cors: true
-  getMinion:
-    handler: services/minions-api/getMinion.main
-    events:
-      - http:
-          path: minion/{id}
           method: get
           cors: true
   sendEmail:

@@ -1,25 +1,23 @@
 import AWS from "aws-sdk";
 
-const ddb = new AWS.DynamoDB.DocumentClient();
+const s3 = new AWS.S3();
 
 export async function main(event, context) {
     let body, statusCode;
 
     const params = {
-        TableName: "minions",
-        Key: {
-            minionId: event.pathParameters.id,
-        },
+        Bucket: "bucket-minion-uploads",
+        Key: event.pathParameters.id,
+        Expires: 5,
     };
 
     try{
-        const result = await ddb.get(params).promise();
-
+        const url = await s3.getSignedUrlPromise('getObject', params);
+        body = url;
         statusCode = 200;
-        body = result.Item;
     }catch(err){
-        statusCode= 500;
         body = {error: err.message};
+        statusCode = 500;
     }
 
     return {
@@ -30,4 +28,4 @@ export async function main(event, context) {
             "Access-Control-Allow-Credentials": true,
         },
     };
-};
+}
